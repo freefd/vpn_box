@@ -1,0 +1,4 @@
+secret = "__MTG_SECRET__"
+bind-to = "0.0.0.0:3128"
+debug = false
+domain-fronting-port = 443

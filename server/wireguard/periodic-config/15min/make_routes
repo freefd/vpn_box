@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+echo "Running make_routes script"
+rm -rf /tmp/z-i
+git clone --depth=1 https://github.com/zapret-info/z-i.git /tmp/z-i
+
+# You can get parser's source from https://github.com/unsacrificed/network-list-parser/
+echo "Generating prefixes"
+parser -src-file /tmp/z-i/dump.csv -prefix 'route ' -suffix ' via "wg0";' 2>/dev/null > /etc/bird/generated.conf
+
+echo "Excluding certain prefixes"
+while read line;
+do
+    sed -i "/$line/d" /etc/bird/generated.conf;
+done < /etc/bird/exclusions.conf
+
+echo "Reloading BIRD"
+birdc configure
+rm -rf /tmp/z-i
